@@ -33,13 +33,15 @@ class ListaDobleEnlazada:
                 self.cabeza = nuevo_nodo
                 self.cola = nuevo_nodo
         else:
+            nuevo_nodo.anterior = self.cola
             self.cola.siguiente = nuevo_nodo
             self.cola = nuevo_nodo
-
+        self.tamanio += 1
 
     def insertar(self, dato, posicion):
         if posicion < 0 or posicion > self.tamanio:
-            raise Exception("Posición inválida")
+            raise Exception("Posicion invalida")
+        
         if posicion == 0:
           self.agregar_al_inicio(dato)
         elif posicion == self.tamanio:
@@ -49,10 +51,11 @@ class ListaDobleEnlazada:
             actual = self.cabeza
             for _ in range(posicion):
                 actual = actual.siguiente
-                nuevo_nodo.anterior = actual.anterior
-                nuevo_nodo.siguiente = actual
-                actual.anterior.siguiente = nuevo_nodo
-                actual.anterior = nuevo_nodo
+
+            nuevo_nodo.anterior = actual.anterior
+            nuevo_nodo.siguiente = actual
+            actual.anterior.siguiente = nuevo_nodo
+            actual.anterior = nuevo_nodo
             self.tamanio += 1
             
     def extraer(self, posicion=None):

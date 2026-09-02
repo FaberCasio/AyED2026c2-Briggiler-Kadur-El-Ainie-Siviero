@@ -166,7 +166,24 @@ class ListaDobleEnlazada:
         return copia.concatenar(otra_lista) 
     
     def __str__(self):
-        pass
+        '''Devuelve una representacion textual de los datos de la lista, complejidad O(N)'''
+
+        # Si la lista esta vacia mostramos lo que corresponda.
+        if self.esta_vacia():
+            return '[]' 
+
+        #inicializamos la cadena de texto de una lista, la recorremos desde el inicio convirtiendo los datos de los nodos en tipo str, al finalizar cerramos la lista.
+        dato_str= '['
+        posicion_actual=self._cabeza
+        while posicion_actual is not None:
+            dato_str=str(posicion_actual.dato)
+            if posicion_actual.siguiente is not None:
+                dato_str += '<->' #indica nodos por ser una lista doble enlazada
+            posicion_actual = posicion_actual.siguiente
+        dato_str += ']'
+
+        #Mostramos la lista.
+        return dato_str
 
 if __name__ == "__main__":
     #prueba de metodos

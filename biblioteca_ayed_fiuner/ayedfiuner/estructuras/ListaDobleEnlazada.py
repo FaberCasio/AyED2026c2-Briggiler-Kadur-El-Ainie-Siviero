@@ -144,7 +144,9 @@ class ListaDobleEnlazada:
         
 
     def esta_vacia(self):
-        pass
+        '''Arroja valor True si la lista no tiene elementos.'''
+        return self.tamanio==0
+        
 
     def __len__(self):
         pass

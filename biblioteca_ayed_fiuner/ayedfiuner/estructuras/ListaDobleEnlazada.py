@@ -154,8 +154,11 @@ class ListaDobleEnlazada:
         
 
     def __iter__(self):
-        pass
-
+        '''Utilizamos un generador para recorrer la lista y es eficiente en memoria'''
+        posicion_actual=self._cabeza
+        while posicion_actual is not None:
+            yield posicion_actual.dato #Procesa un dato a la vez segun se lo necesite
+            posicion_actual=posicion_actual.siguiente
     def __add__(self, otra_lista):
         pass
     

@@ -149,7 +149,9 @@ class ListaDobleEnlazada:
         
 
     def __len__(self):
-        pass
+        '''Devuelve el tamaño actualizado con cada actualizacion de la lista.'''
+        return self._tamanio
+        
 
     def __iter__(self):
         pass

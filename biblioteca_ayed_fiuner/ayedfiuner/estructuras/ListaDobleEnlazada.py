@@ -159,8 +159,11 @@ class ListaDobleEnlazada:
         while posicion_actual is not None:
             yield posicion_actual.dato #Procesa un dato a la vez segun se lo necesite
             posicion_actual=posicion_actual.siguiente
+
     def __add__(self, otra_lista):
-        pass
+        '''Suma dos listas.'''
+        copia = self.copiar() #crea una copia exacta de la lista de la izquierda (self) en memoria
+        return copia.concatenar(otra_lista) 
     
     def __str__(self):
         pass

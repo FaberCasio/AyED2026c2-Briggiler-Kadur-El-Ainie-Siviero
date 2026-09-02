@@ -129,7 +129,19 @@ class ListaDobleEnlazada:
             self.cabeza = temp.anterior
 
     def concatenar(self, otra_lista):
-        pass
+        '''Concatena una lista doblemente enlazada al final de esta. O(N)'''
+
+        #Validamos tipo de dato, lanzamos un mensaje de error en caso de que el argumento no sea de tipo lista doble enlazada.
+        if not isinstance (otra_lista, ListaDobleEnlazada):
+            raise TypeError ('El argumento debe ser una lista doblemente enlazada')
+
+        #Recorremos la otra lista y agregamos al final. O(N)
+        for i in otra_lista:
+            self.agregar_al_final(i)
+
+        #Devolvemos la lista en si modificada
+        return self
+        
 
     def esta_vacia(self):
         pass

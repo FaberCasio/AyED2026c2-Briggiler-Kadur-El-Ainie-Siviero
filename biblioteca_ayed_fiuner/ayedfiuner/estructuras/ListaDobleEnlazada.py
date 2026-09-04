@@ -105,6 +105,10 @@ class ListaDobleEnlazada:
             posicion = self.__tamanio -1
         if not isinstance (posicion,int):
             raise TypeError('La posicion del elemento debe ser un numero entero.')
+
+        if posicion < 0:
+                posicion += self.__tamanio
+        
         if posicion < 0 or posicion >= self.__tamanio:
             raise IndexError('Posicion del elemento fuera de rango.')
 

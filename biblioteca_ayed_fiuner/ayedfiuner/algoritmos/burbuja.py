@@ -1,16 +1,16 @@
-def ordenamiento_burbuja(lis):
-    n = len(lis)
+def ordenamiento_burbuja(lista):
+    n = len(lista)
     for i in range(n):
         hubo_intercambio = False
         for j in range(0, n-i-1):
-            if lis[j] > lis[j+1]:
-                aux = lis[j]
-                lis[j] = lis[j+1]
-                lis[j+1] = aux
+            if lista[j] > lista[j+1]:
+                aux = lista[j]
+                lista[j] = lista[j+1]
+                lista[j+1] = aux
                 hubo_intercambio = True
         if not hubo_intercambio:
             break
-    return lis
+    return lista
 
 
 if __name__ == "__main__":

@@ -280,30 +280,30 @@ class Test_LDE(unittest.TestCase):
             nodo_copia = nodo_copia.siguiente
             contador_pos += 1
 
-    # def test_excepciones_extraer(self):
-    #     """
-    #     pruebo extraer en una lista vacía y en posiciones fuera
-    #     de los límites de la LDE. Compruebo las excepciones
-    #     """
-    #     # LDE vacía
-    #     self.assertRaises(Exception, self.lde_1.extraer,
-    #                       "Extraer de una lista vacia deberia arrojar un error")
-    #     self.assertRaises(Exception, self.lde_1.extraer, 0,
-    #                       "Extraer de una lista vacia deberia arrojar un error")
-    #     self.assertRaises(Exception, self.lde_1.extraer, -1,
-    #                       "Extraer de una lista vacia deberia arrojar un error")
-    #     self.assertRaises(Exception, self.lde_1.extraer, self.n_elementos - 1,
-    #                       "Extraer de una lista vacia deberia arrojar un error")
-    #     self.assertRaises(Exception, self.lde_1.extraer, self.n_elementos + 10,
-    #                       "Extraer de una lista vacia deberia arrojar un error")
-    #     self.assertRaises(Exception, self.lde_1.extraer, -(self.n_elementos + 10),
-    #                       "Extraer de una lista vacia deberia arrojar un error")
+    def test_excepciones_extraer(self):
+        """
+        pruebo extraer en una lista vacía y en posiciones fuera
+        de los límites de la LDE. Compruebo las excepciones
+        """
+        # LDE vacía
+        self.assertRaises(Exception, self.lde_1.extraer,
+                          "Extraer de una lista vacia deberia arrojar un error")
+        self.assertRaises(Exception, self.lde_1.extraer, 0,
+                          "Extraer de una lista vacia deberia arrojar un error")
+        self.assertRaises(Exception, self.lde_1.extraer, -1,
+                          "Extraer de una lista vacia deberia arrojar un error")
+        self.assertRaises(Exception, self.lde_1.extraer, self.n_elementos - 1,
+                          "Extraer de una lista vacia deberia arrojar un error")
+        self.assertRaises(Exception, self.lde_1.extraer, self.n_elementos + 10,
+                          "Extraer de una lista vacia deberia arrojar un error")
+        self.assertRaises(Exception, self.lde_1.extraer, -(self.n_elementos + 10),
+                          "Extraer de una lista vacia deberia arrojar un error")
 
-    #     # LDE no vacia
-    #     self.assertRaises(Exception, self.lde_2.extraer, -50,
-    #                       "Extraer de una posicion negativa dede arrojar error")
-    #     self.assertRaises(Exception, self.lde_2.extraer, self.n_elementos + 50,
-    #                       "Extraer de una posicion mayor al tamaño de la lista menos uno dede arrojar error")
+        # LDE no vacia
+        self.assertRaises(Exception, self.lde_2.extraer, -50,
+                          "Extraer de una posicion negativa dede arrojar error")
+        self.assertRaises(Exception, self.lde_2.extraer, self.n_elementos + 50,
+                          "Extraer de una posicion mayor al tamaño de la lista menos uno dede arrojar error")
 
     def test_operador_len(self):
         """

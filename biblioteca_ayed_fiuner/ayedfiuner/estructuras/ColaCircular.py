@@ -1,7 +1,11 @@
 class ColaCircular:
     def __init__(self, tamanio):
+        # Validar que el tamaño sea un entero mayor a 0
+        if not isinstance(tamanio, int) or tamanio <= 0:
+            raise ValueError("El tamaño debe ser un entero mayor a 0.")
+            
         self.__tamanio = tamanio
-        self.__items = [None] * tamanio  # Vector de tamaño fijo
+        self.__items = [None] * tamanio
         self.__head = -1
         self.__tail = -1
 

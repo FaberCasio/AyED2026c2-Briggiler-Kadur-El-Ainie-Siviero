@@ -1,15 +1,3 @@
-import sys
-from pathlib import Path
-
-# Buscamos la carpeta contenedora
-ruta_archivo = Path(__file__).resolve()
-raiz_workspace = ruta_archivo.parents[3]  # Llega a la carpeta principal del workspace
-ruta_biblioteca = raiz_workspace / 'biblioteca_ayed_fiuner'
-
-# Agregamos la biblioteca al camino de búsqueda de Python
-if str(ruta_biblioteca) not in sys.path:
-    sys.path.append(str(ruta_biblioteca))
-
 import matplotlib.pyplot as plt
 import time
 
@@ -54,9 +42,9 @@ for n in muestra_N:
 #Graficamos
 plt.figure(figsize=(10,6))
 
-plt.plot(muestra_N, tiempo_len, label='__len__()', marker='o')
-plt.plot(muestra_N, tiempo_copiar, label='copiar()', marker='s')
-plt.plot(muestra_N, tiempo_invertir, label='invertir()', marker='^')
+plt.plot(muestra_N, tiempo_len, label='len() - O(1)', marker='o')
+plt.plot(muestra_N, tiempo_copiar, label='copiar() - O(n)', marker='s')
+plt.plot(muestra_N, tiempo_invertir, label='invertir() - O(n)', marker='^')
 
 plt.title('muestra de N elementos vs tiempo de ejecucion metodos LDE')
 plt.xlabel('Cantidad de elementos (N)')

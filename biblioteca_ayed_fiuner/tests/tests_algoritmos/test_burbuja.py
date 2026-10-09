@@ -1,7 +1,9 @@
-import  sys, os 
+import  sys, os
+
+from ayedfiuner.algoritmos.Burbuja import ordenamiento_burbuja
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))  # Agrega el directorio padre al path para importar módulo
 import unittest
-from ayedfiuner.algoritmos.burbuja import ordenamiento_burbuja
+
 
 class TestOrdenamientoBurbuja(unittest.TestCase):
     def test_lista_vacia(self):

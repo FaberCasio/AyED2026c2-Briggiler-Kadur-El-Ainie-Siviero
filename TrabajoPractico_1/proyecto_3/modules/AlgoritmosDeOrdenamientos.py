@@ -1,50 +1,16 @@
 import random
 import time
-import matplotlib.pyplot as plt
+import  sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-def ordenamiento_burbuja(lista):
-    lista = lista.copy()  # crea una copia de la lista para no modificar la original
-    n = len(lista)
-    for i in range(n):
-        hubo_intercambio = False
-        for j in range(0, n-i-1):
-            if lista[j] > lista[j+1]:
-                aux = lista[j]
-                lista[j] = lista[j+1]
-                lista[j+1] = aux
-                hubo_intercambio = True
-        if not hubo_intercambio:
-            break
-    return lista
-
-
-def quicksort(lista):
-    if len(lista) <= 1:
-        return lista
-    pivote = lista[len(lista) // 2]
-    izq = [x for x in lista if x < pivote]
-    medio = [x for x in lista if x == pivote]
-    der = [x for x in lista if x > pivote]
-    return quicksort(izq) + medio + quicksort(der)
-
-
-def radix_sort(lista):
-    if not lista:
-        return lista
-    lista = lista.copy()  # crea una copia de la lista para no modificar la original
-    max_val = max(lista)
-    exp = 1
-    while max_val // exp > 0:
-        buckets = [[] for _ in range(10)]
-        for num in lista:
-            digito = (num // exp) % 10
-            buckets[digito].append(num)
-        lista = [num for bucket in buckets for num in bucket]
-        exp *= 10
-    return lista
+from ayedfiuner.algoritmos.Burbuja import ordenamiento_burbuja
+from ayedfiuner.algoritmos.Quicksort import quicksort
+from ayedfiuner.algoritmos.RadixSort import radix_sort
 
 
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
     # lista mayor a 500 elementos de 5 digitos
     prueba = [random.randint(10000, 99999) for _ in range(600)]
     esperado = sorted(prueba)

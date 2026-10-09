@@ -5,7 +5,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from ayedfiuner.algoritmos.Burbuja import ordenamiento_burbuja
 from ayedfiuner.algoritmos.Quicksort import quicksort
-from ayedfiuner.algoritmos.RadixSort import radix_sort
+from ayedfiuner.algoritmos.Radixsort import radix_sort
 
 
 if __name__ == "__main__":

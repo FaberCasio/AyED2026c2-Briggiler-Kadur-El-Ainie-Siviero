@@ -7,10 +7,10 @@ class ArbolAVL:
         pass
 
     def __len__(self):
-        return self.tamano
+        pass
 
     def devolver_tamanio(self):
-        return self.tamano
+        pass
 
     def agregar(self, clave, valor):
         pass

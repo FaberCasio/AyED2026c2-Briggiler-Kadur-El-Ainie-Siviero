@@ -1,0 +1,28 @@
+class Temperaturas_DB:
+    def __init__(self):
+        pass
+
+    def guardar_temperatura(self, temperatura, fecha):
+        pass
+
+    def devolver_temperatura(self, fecha):
+        pass
+
+    def max_temp_rango(self, fecha1, fecha2):
+        pass
+
+    def min_temp_rango(self, fecha1, fecha2):
+        pass
+
+    def temp_extremos_rango(self, fecha1, fecha2): 
+        pass
+
+    def borrar_temperatura(self, fecha):
+        pass
+
+    def devolver_temperaturas(self, fecha1, fecha2):
+        pass
+
+    def cantidad_muestras(self): 
+        pass
+

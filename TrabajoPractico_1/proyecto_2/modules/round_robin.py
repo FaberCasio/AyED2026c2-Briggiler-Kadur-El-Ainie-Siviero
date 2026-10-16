@@ -1,4 +1,4 @@
-from ayedfiuner.estructuras.ColaCircular import ColaCircular
+from biblioteca_ayed_fiuner.ayedfiuner.estructuras.ColaCircular import ColaCircular
 
 class Proceso:  # clase que representa un proceso en el sistema operativo.
 

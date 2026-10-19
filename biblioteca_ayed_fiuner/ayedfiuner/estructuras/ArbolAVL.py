@@ -1,163 +1,326 @@
 class NodoArbolAVL:
-    def __init__(self, clave, valor):
-        pass
+    def __init__(self, clave, valor, padre=None):
+        self._clave = clave
+        self._valor = valor
+        self._padre = padre
+        self._hijo_izquierdo = None
+        self._hijo_derecho = None
+        self._altura = 1
 
     @property
     def clave(self):
-        pass
+        return self._clave
 
     @property
     def valor(self):
-        pass
+        return self._valor
 
     @property
     def padre(self):
-        pass
+        return self._padre
 
     @property
     def hijo_izquierdo(self):
-        pass
+        return self._hijo_izquierdo
 
     @property
     def hijo_derecho(self):
-        pass
+        return self._hijo_derecho
 
     @property
     def altura(self):
-        pass
+        return self._altura
 
     @clave.setter
-    def clave(self, clave):
-        pass
+    def clave(self, valor):
+        self._clave = valor
 
     @valor.setter
     def valor(self, valor):
-        pass
+        self._valor = valor
 
     @padre.setter
     def padre(self, nodo):
-        pass
+        self._padre = nodo
 
     @hijo_izquierdo.setter
     def hijo_izquierdo(self, nodo):
-        pass
+        self._hijo_izquierdo = nodo
 
     @hijo_derecho.setter
     def hijo_derecho(self, nodo):
-        pass
+        self._hijo_derecho = nodo
 
     def tiene_padre(self):
-        pass
+        return self._padre is not None
 
     def es_raiz(self):
-        pass
+        return self._padre is None
 
     def tiene_hijo_izquierdo(self):
-        pass
+        return self._hijo_izquierdo is not None
 
     def tiene_hijo_derecho(self):
-        pass
+        return self._hijo_derecho is not None
 
     def tiene_hijos(self):
-        pass
+        return self._hijo_izquierdo is not None or self._hijo_derecho is not None
 
     def tiene_ambos_hijos(self):
-        pass
+        return self._hijo_izquierdo is not None and self._hijo_derecho is not None
 
     def es_hoja(self):
-        pass
+        return self._hijo_izquierdo is None and self._hijo_derecho is None
 
     def es_hijo_izquierdo(self):
-        pass
+        return self.tiene_padre() and self._padre.hijo_izquierdo is self
 
     def es_hijo_derecho(self):
-        pass
+        return self.tiene_padre() and self._padre.hijo_derecho is self
 
     @property
     def altura_rama_izquierda(self):
-        pass
+        return self._hijo_izquierdo.altura if self._hijo_izquierdo else 0
 
     @property
     def altura_rama_derecha(self):
-        pass
+        return self._hijo_derecho.altura if self._hijo_derecho else 0
 
     def actualizar_altura(self):
-        pass
+        self._altura = 1 + max(self.altura_rama_izquierda, self.altura_rama_derecha)
 
     @property
     def factor_de_equilibrio(self):
-        pass
+        return self.altura_rama_izquierda - self.altura_rama_derecha
 
 
 class ArbolAVL:
     def __init__(self):
-        pass
+        self._raiz = None
+        self._tamanio = 0
 
     @property
-    def tamaño(self):
-        pass
+    def tamanio(self):
+        return self._tamanio
 
     @property
     def altura(self):
-        pass
+        return self._raiz.altura if self._raiz else 0
 
     @property
     def raiz(self):
-        pass
+        return self._raiz
 
     def esta_vacio(self):
-        pass
+        return self._tamanio == 0
 
     def agregar(self, clave, valor):
-        pass
+        if self._raiz is None:
+            self._raiz = NodoArbolAVL(clave, valor)
+            self._tamanio += 1
+        else:
+            self.__agregar(self._raiz, clave, valor)
 
     def __agregar(self, nodo, clave, valor):
-        pass
+        if clave < nodo.clave:
+            if nodo.hijo_izquierdo is None:
+                nodo.hijo_izquierdo = NodoArbolAVL(clave, valor, padre=nodo)
+                self._tamanio += 1
+                self.__rebalancear(nodo.hijo_izquierdo)
+            else:
+                self.__agregar(nodo.hijo_izquierdo, clave, valor)
+        elif clave > nodo.clave:
+            if nodo.hijo_derecho is None:
+                nodo.hijo_derecho = NodoArbolAVL(clave, valor, padre=nodo)
+                self._tamanio += 1
+                self.__rebalancear(nodo.hijo_derecho)
+            else:
+                self.__agregar(nodo.hijo_derecho, clave, valor)
+        else:
+            nodo.valor = valor
 
     def __rebalancear(self, nodo):
-        pass
+        actual = nodo
+        while actual is not None:
+            actual.actualizar_altura()
+            fe = actual.factor_de_equilibrio
+            if fe > 1:
+                if actual.hijo_izquierdo.factor_de_equilibrio < 0:
+                    self.__rotacion_izquierda(actual.hijo_izquierdo)
+                self.__rotacion_derecha(actual)
+                break
+            elif fe < -1:
+                if actual.hijo_derecho.factor_de_equilibrio > 0:
+                    self.__rotacion_derecha(actual.hijo_derecho)
+                self.__rotacion_izquierda(actual)
+                break
+            actual = actual.padre
 
     def __rotacion_izquierda(self, nodo):
-        pass
+        hijo_der = nodo.hijo_derecho
+        nodo.hijo_derecho = hijo_der.hijo_izquierdo
+        if hijo_der.hijo_izquierdo:
+            hijo_der.hijo_izquierdo.padre = nodo
+        hijo_der.padre = nodo.padre
+        if nodo.es_raiz():
+            self._raiz = hijo_der
+        elif nodo.es_hijo_izquierdo():
+            nodo.padre.hijo_izquierdo = hijo_der
+        else:
+            nodo.padre.hijo_derecho = hijo_der
+        hijo_der.hijo_izquierdo = nodo
+        nodo.padre = hijo_der
+        nodo.actualizar_altura()
+        hijo_der.actualizar_altura()
 
     def __rotacion_derecha(self, nodo):
-        pass
+        hijo_izq = nodo.hijo_izquierdo
+        nodo.hijo_izquierdo = hijo_izq.hijo_derecho
+        if hijo_izq.hijo_derecho:
+            hijo_izq.hijo_derecho.padre = nodo
+        hijo_izq.padre = nodo.padre
+        if nodo.es_raiz():
+            self._raiz = hijo_izq
+        elif nodo.es_hijo_izquierdo():
+            nodo.padre.hijo_izquierdo = hijo_izq
+        else:
+            nodo.padre.hijo_derecho = hijo_izq
+        hijo_izq.hijo_derecho = nodo
+        nodo.padre = hijo_izq
+        nodo.actualizar_altura()
+        hijo_izq.actualizar_altura()
 
     def inorden(self):
-        pass
+        '''
+        Recorre el arbol en orden (izquierdo-raiz-derecho).
+        
+        PRE: Ninguna.
+        POST: Retorna una lista de tuplas (clave, valor) ordenadas por clave.
+                El arbol no se modifica.
+        '''
+        resultado = []
+        self.__inorden(self._raiz, resultado)
+        return resultado
 
-    def __inorden(self, nodo):
-        pass
+    def __inorden(self, nodo, resultado):
+        if nodo is not None:
+            self.__inorden(nodo.hijo_izquierdo, resultado)
+            resultado.append((nodo.clave, nodo.valor))
+            self.__inorden(nodo.hijo_derecho, resultado)
 
     def obtener(self, clave):
-        pass
+        '''
+        Busca una clave en el arbol y retorna su valor asociado.
+        
+        PRE: clave es del mismo tipo que las claves almacenadas.
+        POST: Retorna el valor asociado a la clave si existe, o None si no.
+                El arbol no se modifica.
+        '''
+        return self.__obtener(self._raiz, clave)
 
     def __obtener(self, nodo, clave):
-        pass
+        if nodo is None:
+            return None
+        if clave == nodo.clave:
+            return nodo.valor
+        if clave < nodo.clave:
+            return self.__obtener(nodo.hijo_izquierdo, clave)
+        return self.__obtener(nodo.hijo_derecho, clave)
 
     def __setitem__(self, clave, valor):
-        pass
+        self.agregar(clave, valor)
 
     def __getitem__(self, clave):
-        pass
+        return self.obtener(clave)
 
     def __contains__(self, clave):
-        pass
+        '''
+        Verifica si una clave existe en el arbol.
+        
+        PRE: clave es del mismo tipo que las claves almacenadas.
+        POST: Retorna True si la clave existe, False en caso contrario.
+                El arbol no se modifica.
+        '''
+        return self.obtener(clave) is not None
 
     def eliminar(self, clave):
-        pass
+        '''
+        Elimina un par clave-valor del arbol AVL.
+        Luego de eliminar, balancea el arbol automaticamente.
+        
+        PRE: clave existe en el arbol.
+        POST: El par clave-valor es eliminado. _tamanio disminuye en 1.
+                El arbol permanece balanceado (AVL).
+        
+        Lanza:
+        - ValueError: si la clave no existe o el arbol esta vacio.
+        '''
+        if self._raiz is None:
+            raise ValueError("El árbol está vacío")
+        self._raiz = self.__eliminar(self._raiz, clave)
 
     def __eliminar(self, nodo, clave):
-        pass
+        if nodo is None:
+            return None
+        
+        if clave < nodo.clave:
+            nodo.hijo_izquierdo = self.__eliminar(nodo.hijo_izquierdo, clave)
+        elif clave > nodo.clave:
+            nodo.hijo_derecho = self.__eliminar(nodo.hijo_derecho, clave)
+        else:
+            # Encontramos el nodo a eliminar
+            self._tamanio -= 1
+            if nodo.es_hoja():
+                return None
+            elif not nodo.tiene_hijo_izquierdo():
+                nodo.hijo_derecho.padre = nodo.padre
+                return nodo.hijo_derecho
+            elif not nodo.tiene_hijo_derecho():
+                nodo.hijo_izquierdo.padre = nodo.padre
+                return nodo.hijo_izquierdo
+            else:
+                # Tiene ambos hijos: buscamos el sucesor (mínimo del subárbol derecho)
+                sucesor = self.__obtener_minimo(nodo.hijo_derecho)
+                nodo.clave = sucesor.clave
+                nodo.valor = sucesor.valor
+                nodo.hijo_derecho = self.__eliminar(nodo.hijo_derecho, sucesor.clave)
+                self._tamanio += 1  # Compensamos porque __eliminar volverá a restar
+
+        # Actualizamos la altura y rebalanceamos usando el método ya existente de la clase
+        nodo.actualizar_altura()
+        self.__rebalancear(nodo)
+        return nodo
 
     def __obtener_minimo(self, nodo):
-        pass
+        actual = nodo
+        while actual.hijo_izquierdo:
+            actual = actual.hijo_izquierdo
+        return actual
 
     def __delitem__(self, clave):
-        pass
+        self.eliminar(clave)
 
     def inorden_con_poda(self, clave_minima, clave_maxima):
-        pass
+        '''
+        Recorre el arbol en orden dentro de un rango de claves.
+        
+        PRE: clave_min y clave_max son del mismo tipo que las claves almacenadas.
+             Si se especifican ambos, clave_min <= clave_max.
+        POST: Retorna una lista de tuplas (clave, valor) cuyas claves estan
+              en el rango [clave_min, clave_max] inclusive.
+              Si clave_min es None, no hay limite inferior.
+              Si clave_max es None, no hay limite superior.
+              El arbol no se modifica.
+                '''
+        resultado = []
+        self.__inorden_con_poda(self._raiz, clave_minima, clave_maxima, resultado)
+        return resultado
 
-    def __inorden_con_poda(self, nodo, clave_minima, clave_maxima):
-        pass
+    def __inorden_con_poda(self, nodo, clave_minima, clave_maxima, resultado):
+        if nodo is not None:
+            if clave_minima < nodo.clave:
+                self.__inorden_con_poda(nodo.hijo_izquierdo, clave_minima, clave_maxima, resultado)
+            if clave_minima <= nodo.clave <= clave_maxima:
+                resultado.append((nodo.clave, nodo.valor))
+            if clave_maxima > nodo.clave:
+                self.__inorden_con_poda(nodo.hijo_derecho, clave_minima, clave_maxima, resultado)

@@ -138,65 +138,107 @@ class ArbolAVL:
                 self.__agregar(nodo.hijo_derecho, clave, valor)
         else:
             nodo.valor = valor
-
+    
     def __rebalancear(self, nodo):
         actual = nodo
+
         while actual is not None:
             actual.actualizar_altura()
             fe = actual.factor_de_equilibrio
+
             if fe > 1:
                 if actual.hijo_izquierdo.factor_de_equilibrio < 0:
                     self.__rotacion_izquierda(actual.hijo_izquierdo)
+
                 self.__rotacion_derecha(actual)
-                break
+
             elif fe < -1:
                 if actual.hijo_derecho.factor_de_equilibrio > 0:
                     self.__rotacion_derecha(actual.hijo_derecho)
+
                 self.__rotacion_izquierda(actual)
-                break
+
+            # Subir desde el nodo actual hasta su padre,
+            # incluso después de una rotación.
             actual = actual.padre
+
+    def __rebalancear_nodo(self, nodo):
+        nodo.actualizar_altura()
+        fe = nodo.factor_de_equilibrio
+
+        if fe > 1:
+            if nodo.hijo_izquierdo.factor_de_equilibrio < 0:
+                self.__rotacion_izquierda(nodo.hijo_izquierdo)
+
+            self.__rotacion_derecha(nodo)
+            return nodo.padre
+
+        elif fe < -1:
+            if nodo.hijo_derecho.factor_de_equilibrio > 0:
+                self.__rotacion_derecha(nodo.hijo_derecho)
+
+            self.__rotacion_izquierda(nodo)
+            return nodo.padre
+
+        return nodo
 
     def __rotacion_izquierda(self, nodo):
         hijo_der = nodo.hijo_derecho
+        padre_original = nodo.padre
+
         nodo.hijo_derecho = hijo_der.hijo_izquierdo
-        if hijo_der.hijo_izquierdo:
+
+        if hijo_der.hijo_izquierdo is not None:
             hijo_der.hijo_izquierdo.padre = nodo
-        hijo_der.padre = nodo.padre
-        if nodo.es_raiz():
+
+        hijo_der.padre = padre_original
+
+        if padre_original is None:
             self._raiz = hijo_der
-        elif nodo.es_hijo_izquierdo():
-            nodo.padre.hijo_izquierdo = hijo_der
+        elif padre_original.hijo_izquierdo is nodo:
+            padre_original.hijo_izquierdo = hijo_der
         else:
-            nodo.padre.hijo_derecho = hijo_der
+            padre_original.hijo_derecho = hijo_der
+
         hijo_der.hijo_izquierdo = nodo
         nodo.padre = hijo_der
+
         nodo.actualizar_altura()
         hijo_der.actualizar_altura()
 
     def __rotacion_derecha(self, nodo):
         hijo_izq = nodo.hijo_izquierdo
+        padre_original = nodo.padre
+
         nodo.hijo_izquierdo = hijo_izq.hijo_derecho
-        if hijo_izq.hijo_derecho:
+
+        if hijo_izq.hijo_derecho is not None:
             hijo_izq.hijo_derecho.padre = nodo
-        hijo_izq.padre = nodo.padre
-        if nodo.es_raiz():
+
+        hijo_izq.padre = padre_original
+
+        if padre_original is None:
             self._raiz = hijo_izq
-        elif nodo.es_hijo_izquierdo():
-            nodo.padre.hijo_izquierdo = hijo_izq
+        elif padre_original.hijo_izquierdo is nodo:
+            padre_original.hijo_izquierdo = hijo_izq
         else:
-            nodo.padre.hijo_derecho = hijo_izq
+            padre_original.hijo_derecho = hijo_izq
+
         hijo_izq.hijo_derecho = nodo
         nodo.padre = hijo_izq
+
         nodo.actualizar_altura()
         hijo_izq.actualizar_altura()
 
     def inorden(self):
         '''
         Recorre el arbol en orden (izquierdo-raiz-derecho).
-        
+
         PRE: Ninguna.
         POST: Retorna una lista de tuplas (clave, valor) ordenadas por clave.
+
                 El arbol no se modifica.
+
         '''
         resultado = []
         self.__inorden(self._raiz, resultado)
@@ -211,10 +253,12 @@ class ArbolAVL:
     def obtener(self, clave):
         '''
         Busca una clave en el arbol y retorna su valor asociado.
-        
+
         PRE: clave es del mismo tipo que las claves almacenadas.
         POST: Retorna el valor asociado a la clave si existe, o None si no.
+
                 El arbol no se modifica.
+
         '''
         return self.__obtener(self._raiz, clave)
 
@@ -231,15 +275,20 @@ class ArbolAVL:
         self.agregar(clave, valor)
 
     def __getitem__(self, clave):
-        return self.obtener(clave)
+        valor = self.obtener(clave)
+        if valor is None:
+            raise KeyError(f"La clave {clave} no existe en el árbol")
+        return valor
 
     def __contains__(self, clave):
         '''
         Verifica si una clave existe en el arbol.
-        
+
         PRE: clave es del mismo tipo que las claves almacenadas.
         POST: Retorna True si la clave existe, False en caso contrario.
+
                 El arbol no se modifica.
+
         '''
         return self.obtener(clave) is not None
 
@@ -247,54 +296,107 @@ class ArbolAVL:
         '''
         Elimina un par clave-valor del arbol AVL.
         Luego de eliminar, balancea el arbol automaticamente.
-        
+
         PRE: clave existe en el arbol.
         POST: El par clave-valor es eliminado. _tamanio disminuye en 1.
+
                 El arbol permanece balanceado (AVL).
-        
+
         Lanza:
         - ValueError: si la clave no existe o el arbol esta vacio.
         '''
-        if self._raiz is None:
-            raise ValueError("El árbol está vacío")
-        self._raiz = self.__eliminar(self._raiz, clave)
+        nueva_raiz, eliminado = self.__eliminar(self._raiz, clave)
+
+        if eliminado:
+            self._tamanio -= 1
+
+        # Recuperar la raiz real despues de posibles rotaciones.
+        if nueva_raiz is None:
+            self._raiz = None
+        else:
+            while nueva_raiz.padre is not None:
+                nueva_raiz = nueva_raiz.padre
+
+            self._raiz = nueva_raiz
+            self._raiz.padre = None
 
     def __eliminar(self, nodo, clave):
         if nodo is None:
-            return None
-        
-        if clave < nodo.clave:
-            nodo.hijo_izquierdo = self.__eliminar(nodo.hijo_izquierdo, clave)
-        elif clave > nodo.clave:
-            nodo.hijo_derecho = self.__eliminar(nodo.hijo_derecho, clave)
-        else:
-            # Encontramos el nodo a eliminar
-            self._tamanio -= 1
-            if nodo.es_hoja():
-                return None
-            elif not nodo.tiene_hijo_izquierdo():
-                nodo.hijo_derecho.padre = nodo.padre
-                return nodo.hijo_derecho
-            elif not nodo.tiene_hijo_derecho():
-                nodo.hijo_izquierdo.padre = nodo.padre
-                return nodo.hijo_izquierdo
-            else:
-                # Tiene ambos hijos: buscamos el sucesor (mínimo del subárbol derecho)
-                sucesor = self.__obtener_minimo(nodo.hijo_derecho)
-                nodo.clave = sucesor.clave
-                nodo.valor = sucesor.valor
-                nodo.hijo_derecho = self.__eliminar(nodo.hijo_derecho, sucesor.clave)
-                self._tamanio += 1  # Compensamos porque __eliminar volverá a restar
+            return None, False
 
-        # Actualizamos la altura y rebalanceamos usando el método ya existente de la clase
-        nodo.actualizar_altura()
-        self.__rebalancear(nodo)
-        return nodo
+        if clave < nodo.clave:
+            nodo.hijo_izquierdo, eliminado = self.__eliminar(
+                nodo.hijo_izquierdo, clave
+            )
+
+            if nodo.hijo_izquierdo is not None:
+                nodo.hijo_izquierdo.padre = nodo
+
+        elif clave > nodo.clave:
+            nodo.hijo_derecho, eliminado = self.__eliminar(
+                nodo.hijo_derecho, clave
+            )
+
+            if nodo.hijo_derecho is not None:
+                nodo.hijo_derecho.padre = nodo
+
+        else:
+            eliminado = True
+
+            if nodo.es_hoja():
+                return None, True
+
+            if nodo.hijo_izquierdo is None:
+                hijo = nodo.hijo_derecho
+                hijo.padre = nodo.padre
+                return hijo, True
+
+            if nodo.hijo_derecho is None:
+                hijo = nodo.hijo_izquierdo
+                hijo.padre = nodo.padre
+                return hijo, True
+
+            sucesor = self.__obtener_minimo(nodo.hijo_derecho)
+            nodo.clave = sucesor.clave
+            nodo.valor = sucesor.valor
+            nodo.hijo_derecho, _ = self.__eliminar(
+                nodo.hijo_derecho, sucesor.clave
+            )
+
+            if nodo.hijo_derecho is not None:
+                nodo.hijo_derecho.padre = nodo
+
+        nodo = self.__rebalancear_nodo(nodo)
+        return nodo, eliminado
+
+    def __rebalancear(self, nodo):
+        actual = nodo
+
+        while actual is not None:
+            actual.actualizar_altura()
+            fe = actual.factor_de_equilibrio
+
+            if fe > 1:
+                if actual.hijo_izquierdo.factor_de_equilibrio < 0:
+                    self.__rotacion_izquierda(actual.hijo_izquierdo)
+
+                self.__rotacion_derecha(actual)
+
+            elif fe < -1:
+                if actual.hijo_derecho.factor_de_equilibrio > 0:
+                    self.__rotacion_derecha(actual.hijo_derecho)
+
+                self.__rotacion_izquierda(actual)
+
+            # Continuar desde el padre del nodo que se estaba evaluando.
+            actual = actual.padre
 
     def __obtener_minimo(self, nodo):
         actual = nodo
-        while actual.hijo_izquierdo:
+
+        while actual.hijo_izquierdo is not None:
             actual = actual.hijo_izquierdo
+
         return actual
 
     def __delitem__(self, clave):
@@ -303,24 +405,25 @@ class ArbolAVL:
     def inorden_con_poda(self, clave_minima, clave_maxima):
         '''
         Recorre el arbol en orden dentro de un rango de claves.
-        
+
         PRE: clave_min y clave_max son del mismo tipo que las claves almacenadas.
              Si se especifican ambos, clave_min <= clave_max.
+
         POST: Retorna una lista de tuplas (clave, valor) cuyas claves estan
               en el rango [clave_min, clave_max] inclusive.
               Si clave_min es None, no hay limite inferior.
               Si clave_max es None, no hay limite superior.
               El arbol no se modifica.
-                '''
+        '''
         resultado = []
         self.__inorden_con_poda(self._raiz, clave_minima, clave_maxima, resultado)
         return resultado
 
     def __inorden_con_poda(self, nodo, clave_minima, clave_maxima, resultado):
         if nodo is not None:
-            if clave_minima < nodo.clave:
+            if clave_minima is None or clave_minima < nodo.clave:
                 self.__inorden_con_poda(nodo.hijo_izquierdo, clave_minima, clave_maxima, resultado)
-            if clave_minima <= nodo.clave <= clave_maxima:
+            if (clave_minima is None or clave_minima <= nodo.clave) and (clave_maxima is None or nodo.clave <= clave_maxima):
                 resultado.append((nodo.clave, nodo.valor))
-            if clave_maxima > nodo.clave:
+            if clave_maxima is None or clave_maxima > nodo.clave:
                 self.__inorden_con_poda(nodo.hijo_derecho, clave_minima, clave_maxima, resultado)

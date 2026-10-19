@@ -32,7 +32,7 @@ class TemperaturasDB:
              fecha es una cadena con formato "dd/mm/aaaa".
         POST: El par (fecha, temperatura) queda almacenado.
               Si la fecha ya existia, se actualiza la temperatura.
-                
+         
         Lanza:
         - TypeError: si temperatura no es un numero.
         - ValueError: si la fecha no tiene el formato valido.

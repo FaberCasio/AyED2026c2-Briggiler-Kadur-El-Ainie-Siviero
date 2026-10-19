@@ -1,6 +1,5 @@
 import datetime
-from biblioteca_ayed_fiuner.ayedfiuner.estructuras.avl import ArbolAVL, avl as ArbolAVL
-
+from ayedfiuner.estructuras.ArbolAVL import ArbolAVL
 
 class TemperaturasDB:
     def __init__(self):
@@ -28,12 +27,12 @@ class TemperaturasDB:
     def guardar_temperatura(self, temperatura, fecha):
         '''
         Almacena una medicion de temperatura asociada a una fecha.
-        
+                
         PRE: temperatura es un numero (int o float).
              fecha es una cadena con formato "dd/mm/aaaa".
         POST: El par (fecha, temperatura) queda almacenado.
               Si la fecha ya existia, se actualiza la temperatura.
-        
+                
         Lanza:
         - TypeError: si temperatura no es un numero.
         - ValueError: si la fecha no tiene el formato valido.
@@ -41,21 +40,21 @@ class TemperaturasDB:
         if not isinstance(temperatura, (int, float)):
             raise TypeError("La temperatura debe ser un número")
         fecha_date = self.__parsear_fecha(fecha)
-        self.__arbol.insertar(fecha_date, float(temperatura))
+        self.__arbol.agregar(fecha_date, float(temperatura))
 
     def devolver_temperatura(self, fecha):
         '''
         Retorna la temperatura almacenada para una fecha dada.
-        
+                
         PRE: fecha es una cadena con formato "dd/mm/aaaa".
         POST: Retorna la temperatura asociada a la fecha.
               La base de datos no se modifica.
-        
+                
         Lanza:
         - ValueError: si no hay temperatura para la fecha indicada.
         '''
         fecha_date = self.__parsear_fecha(fecha)
-        temp = self.__arbol.buscar(fecha_date)
+        temp = self.__arbol.obtener(fecha_date)
         if temp is None:
             raise ValueError(f"No se encontró temperatura para la fecha '{fecha}'")
         return temp
@@ -63,17 +62,17 @@ class TemperaturasDB:
     def max_temp_rango(self, fecha1, fecha2):
         '''
         Retorna la temperatura maxima en un rango de fechas inclusive.
-        
+                
         PRE: fecha1 y fecha2 son cadenas con formato "dd/mm/aaaa".
              fecha1 debe ser anterior a fecha2.
         POST: Retorna el valor maximo de temperatura en [fecha1, fecha2].
               La base de datos no se modifica.
-        
+                
         Lanza:
         - ValueError: si el rango es invalido o no hay datos.
         '''
         d1, d2 = self.__validar_rango(fecha1, fecha2)
-        datos = self.__arbol.inorden_rango(d1, d2)
+        datos = self.__arbol.inorden_con_poda(d1, d2)
         if not datos:
             raise ValueError(f"No hay datos en el rango '{fecha1}' - '{fecha2}'")
         return max(dato[1] for dato in datos)
@@ -81,17 +80,17 @@ class TemperaturasDB:
     def min_temp_rango(self, fecha1, fecha2):
         '''
         Retorna la temperatura minima en un rango de fechas inclusive.
-        
+                
         PRE: fecha1 y fecha2 son cadenas con formato "dd/mm/aaaa".
              fecha1 debe ser anterior a fecha2.
         POST: Retorna el valor minimo de temperatura en [fecha1, fecha2].
               La base de datos no se modifica.
-        
+                
         Lanza:
         - ValueError: si el rango es invalido o no hay datos.
         '''
         d1, d2 = self.__validar_rango(fecha1, fecha2)
-        datos = self.__arbol.inorden_rango(d1, d2)
+        datos = self.__arbol.inorden_con_poda(d1, d2)
         if not datos:
             raise ValueError(f"No hay datos en el rango '{fecha1}' - '{fecha2}'")
         return min(dato[1] for dato in datos)
@@ -99,17 +98,17 @@ class TemperaturasDB:
     def temp_extremos_rango(self, fecha1, fecha2):
         '''
         Retorna las temperaturas minima y maxima en un rango de fechas inclusive.
-        
+                
         PRE: fecha1 y fecha2 son cadenas con formato "dd/mm/aaaa".
              fecha1 debe ser anterior a fecha2.
         POST: Retorna una tupla (minimo, maximo) con las temperaturas extremas.
               La base de datos no se modifica.
-        
+                
         Lanza:
         - ValueError: si el rango es invalido o no hay datos.
         '''
         d1, d2 = self.__validar_rango(fecha1, fecha2)
-        datos = self.__arbol.inorden_rango(d1, d2)
+        datos = self.__arbol.inorden_con_poda(d1, d2)
         if not datos:
             raise ValueError(f"No hay datos en el rango '{fecha1}' - '{fecha2}'")
         temps = [dato[1] for dato in datos]
@@ -127,6 +126,8 @@ class TemperaturasDB:
         - ValueError: si la fecha no existe en la base de datos.
         '''
         fecha_date = self.__parsear_fecha(fecha)
+        if fecha_date not in self.__arbol:
+            raise ValueError(f"La fecha '{fecha}' no existe en la base de datos")
         self.__arbol.eliminar(fecha_date)
 
     def __formato_salida(self, fecha, temp):
@@ -146,7 +147,7 @@ class TemperaturasDB:
         - ValueError: si el rango es invalido o no hay datos.
         '''
         d1, d2 = self.__validar_rango(fecha1, fecha2)
-        datos = self.__arbol.inorden_rango(d1, d2)
+        datos = self.__arbol.inorden_con_poda(d1, d2)
         if not datos:
             raise ValueError(f"No hay datos en el rango '{fecha1}' - '{fecha2}'")
         return [self.__formato_salida(fecha, temp) for fecha, temp in datos]

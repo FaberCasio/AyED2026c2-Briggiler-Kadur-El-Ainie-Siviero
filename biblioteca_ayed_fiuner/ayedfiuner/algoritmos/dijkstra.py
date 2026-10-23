@@ -1,3 +1,6 @@
+import heapq
+from itertools import count
+
 def aplicar_prim(grafo, clave_inicio):
     """
     Calcula el Árbol de Expansión Mínima (MST) del grafo utilizando el algoritmo de Prim.
@@ -66,6 +69,58 @@ def aplicar_dijkstra(grafo, clave_inicio):
     for vertice_actual, vertice_predecesor in predecesores.items():
         pass  # Completar
 
+    return aristas_finales
+
+
+
+def dijkstra(grafo, clave_inicio):
+    """
+    Calcula el árbol de caminos mínimos desde un origen.
+
+    Devuelve una lista de tuplas (predecesor, vertice, peso, distancia_total)
+    para cada vertice alcanzable excepto el origen, ordenada por distancia
+    total. Los pesos deben ser no negativos.
+    """
+    inicio = grafo.obtenerVertice(clave_inicio)
+    if inicio is None:
+        raise ValueError(f"No existe un vertice con clave {clave_inicio!r}")
+
+    inf = float('inf')
+    distancias = {vertice: inf for vertice in grafo}
+    distancias[inicio] = 0
+    predecesores = {}
+    visitados = set()
+    orden = count()
+    cola_prioridad = [(0, next(orden), inicio)]
+
+    while cola_prioridad:
+        distancia_actual, _, vertice_actual = heapq.heappop(cola_prioridad)
+
+        if vertice_actual in visitados:
+            continue
+        visitados.add(vertice_actual)
+
+        for vecino in vertice_actual.obtenerConexiones():
+            if vecino in visitados:
+                continue
+
+            peso = vertice_actual.obtenerPonderacion(vecino)
+            if not (peso >= 0):  # también rechaza NaN
+                raise ValueError("Dijkstra solo admite pesos no negativos")
+
+            nueva_distancia = distancia_actual + peso
+            if nueva_distancia < distancias.get(vecino, inf):
+                distancias[vecino] = nueva_distancia
+                predecesores[vecino] = vertice_actual
+                heapq.heappush(
+                    cola_prioridad, (nueva_distancia, next(orden), vecino)
+                )
+
+    aristas_finales = [
+        (pred, v, pred.obtenerPonderacion(v), distancias[v])
+        for v, pred in predecesores.items()
+    ]
+    aristas_finales.sort(key=lambda t: t[3])
     return aristas_finales
 
 

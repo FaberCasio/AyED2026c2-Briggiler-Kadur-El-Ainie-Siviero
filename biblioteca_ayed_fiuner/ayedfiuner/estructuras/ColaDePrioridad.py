@@ -22,6 +22,19 @@ class ColaDePrioridad:     # Crea la clase ColaDePrioridad
         prioridad, orden, elemento = self.__monticulo.eliminarMin()     # Extrae la tupla de menor prioridad del monticulo
         return elemento     # Retorna solo el elemento, ignorando la prioridad y el orden de llegada
 
+    def decrementar_clave(self, elemento, nueva_prioridad):
+        """
+        Disminuye la prioridad de un elemento existente.
+        Si el elemento no se encuentra, no hace nada.
+        """
+        for i in range(1, self.__monticulo.tamanoActual + 1):     # Recorre los elementos del monticulo binario
+            prioridad, orden, elem = self.__monticulo.listaMonticulo[i]     # Desempaqueta la tupla en prioridad, orden y elemento
+            if elem == elemento:     # Compara el elemento actual con el que se desea decrementar
+                if nueva_prioridad < prioridad:     # Solo permite disminuir la prioridad si la nueva es menor
+                    self.__monticulo.listaMonticulo[i] = (nueva_prioridad, orden, elem)     # Actualiza la tupla con la nueva prioridad
+                    self.__monticulo.infiltArriba(i)     # Reorganiza el monticulo para mantener la propiedad de heap
+                break     # Sale del bucle una vez que se encuentra y actualiza el elemento
+
     def esta_vacia(self):
         return self.__monticulo.tamanoActual == 0     # Evalua si la cantidad de elementos en el monticulo es igual a cero
 

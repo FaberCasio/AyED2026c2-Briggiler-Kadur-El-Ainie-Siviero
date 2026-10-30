@@ -1,4 +1,4 @@
-from ayedfiuner.algoritmos.burbuja import ordenamiento_burbuja
+from ayedfiuner.algoritmos.Burbuja import ordenamiento_burbuja
 from ayedfiuner.estructuras.circulo import Circulo
 from ayedfiuner.estructuras.punto import Punto
 from ayedfiuner.estructuras.poligono import Poligono

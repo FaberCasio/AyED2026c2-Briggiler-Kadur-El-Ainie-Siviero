@@ -69,4 +69,74 @@ class MonticuloBinario:     # Crea la clase monticulo binario
         self.infiltAbajo(1)     # Infiltra el nuevo elemento en la raíz hacia abajo para mantener la propiedad del montículo
         return valorSacado     # devuelve el valor del elemento mínimo eliminado
 
-    
+
+class MonticuloMaximos:     # Crea la clase montículo de máximos
+    def __init__(self):     # Inicializa la lista del montículo y el tamaño actual
+        """ Precondición: Ninguna
+            Postcondición: Crea un montículo de máximos vacío, con el índice 0 como marcador y tamaño actual 0
+        """
+        self.listaMonticulo = [0]
+        self.tamanoActual = 0
+
+
+    def infiltArriba(self, i):     # Infiltra el elemento en la posición i hacia arriba
+        """ Precondición: 'i' es un índice válido dentro de la lista del montículo
+            Postcondición: Restablece la propiedad de montículo de máximos (padre >= hijos)
+        """
+        while i // 2 > 0:
+            if self.listaMonticulo[i] > self.listaMonticulo[i // 2]:     # si el hijo es MAYOR que el padre, los intercambia
+                tmp = self.listaMonticulo[i // 2]
+                self.listaMonticulo[i // 2] = self.listaMonticulo[i]
+                self.listaMonticulo[i] = tmp
+            else:
+                break     # si el padre ya es mayor, no hace falta seguir subiendo
+            i = i // 2
+
+
+    def insertar(self, k):     # Inserta un nuevo elemento k al final y lo infiltra hacia arriba
+        """ Precondición: 'k' debe ser de un tipo comparable
+            Postcondición: Agrega 'k' manteniendo la propiedad de montículo y aumenta el tamaño en 1
+        """
+        self.listaMonticulo.append(k)
+        self.tamanoActual = self.tamanoActual + 1
+        self.infiltArriba(self.tamanoActual)
+
+
+    def infiltAbajo(self, i):     # Infiltra el elemento en la posición i hacia abajo
+        """ Precondición: 'i' es un índice válido dentro del montículo
+            Postcondición: Restablece la propiedad de montículo de máximos
+        """
+        while (i * 2) <= self.tamanoActual:     # mientras el hijo izquierdo exista
+            hm = self.hijoMax(i)     # índice del hijo mayor
+            if self.listaMonticulo[i] < self.listaMonticulo[hm]:     # si el padre es MENOR que el hijo mayor, intercambia
+                tmp = self.listaMonticulo[i]
+                self.listaMonticulo[i] = self.listaMonticulo[hm]
+                self.listaMonticulo[hm] = tmp
+            else:
+                break     # si el padre ya es mayor que sus hijos, termina
+            i = hm
+
+
+    def hijoMax(self, i):
+        """ Precondición: El nodo en la posición 'i' tiene al menos un hijo izquierdo
+            Postcondición: Devuelve el índice del hijo con el mayor valor
+        """
+        if i * 2 + 1 > self.tamanoActual:     # si no existe hijo derecho, devuelve el izquierdo
+            return i * 2
+        else:
+            if self.listaMonticulo[i * 2] > self.listaMonticulo[i * 2 + 1]:     # devuelve el índice del hijo mayor
+                return i * 2
+            else:
+                return i * 2 + 1
+
+
+    def eliminarMax(self):
+        """ Precondición: El montículo no debe estar vacío
+            Postcondición: Elimina y retorna el valor máximo (raíz), manteniendo la estructura
+        """
+        valorSacado = self.listaMonticulo[1]     # guarda el máximo (raíz)
+        self.listaMonticulo[1] = self.listaMonticulo[self.tamanoActual]     # mueve el último elemento a la raíz
+        self.tamanoActual = self.tamanoActual - 1
+        self.listaMonticulo.pop()
+        self.infiltAbajo(1)
+        return valorSacado

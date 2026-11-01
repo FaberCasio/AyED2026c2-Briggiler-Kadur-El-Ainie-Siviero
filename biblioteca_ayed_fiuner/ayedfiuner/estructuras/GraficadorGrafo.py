@@ -46,7 +46,6 @@ def graficar_grafo(grafo, seed=42):
     plt.axis("off")
     plt.show()
 
-
 # def crear_grafo_no_dirigido():
 #     grafo = Grafo()
 #     grafo.agregar_arista(0, 1, 5)

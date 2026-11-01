@@ -1,5 +1,5 @@
 from ayedfiuner.estructuras.Vertice import Vertice
-
+from ayedfiuner.estructuras.GraficadorGrafo import graficar_grafo
 class Grafo:
     def __init__(self):
         self.listaVertices = {}

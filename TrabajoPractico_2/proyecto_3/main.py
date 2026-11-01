@@ -13,7 +13,7 @@ def cargar_rutas(ruta_archivo):
     Postcondición: devuelve {ciudad: [(vecino, capacidad, costo), ...]}.
                    Las rutas se cargan en ambos sentidos.
     """
-    ady = {}
+    ady = {}      #modoficar y llamar a la clase grafo
     with open(ruta_archivo, "r", encoding="utf-8") as archivo:
         for linea in archivo:
             linea = linea.strip()

@@ -7,7 +7,7 @@ import time
 import datetime
 import random
 import modules.paciente as pac
-from biblioteca_ayed_fiuner.ayedfiuner.estructuras.ColaDePrioridad import ColaDePrioridad
+from ayedfiuner.estructuras.ColaDePrioridad import ColaDePrioridad
 
 n = 20  # cantidad de ciclos de simulación
 

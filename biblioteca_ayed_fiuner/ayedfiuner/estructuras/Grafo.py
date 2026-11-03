@@ -1,5 +1,4 @@
 from ayedfiuner.estructuras.Vertice import Vertice
-from ayedfiuner.estructuras.GraficadorGrafo import graficar_grafo
 class Grafo:
     """Grafo dirigido y ponderado, representado con lista de adyacencia.
  
@@ -106,4 +105,3 @@ if __name__ == "__main__":
     #     for w in v.obtenerConexiones():
     #         print(f"{v.obtenerClave()} conecta con {w.obtenerClave()} con peso {v.obtenerPonderacion(w)}")
 
-    graficar_grafo(g)

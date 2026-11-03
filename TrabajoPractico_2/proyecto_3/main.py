@@ -1,6 +1,6 @@
 from pathlib import Path
 from ayedfiuner.estructuras.Grafo import Grafo
-from ayedfiuner.algoritmos.dijkstra import dijkstra, dijkstra_mod     # ajustá al nombre real de tu archivo
+from ayedfiuner.algoritmos.dijkstra import dijkstra, dijkstra_mod
 
 '''
 Notación:
